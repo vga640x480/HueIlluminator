@@ -1,0 +1,51 @@
+﻿<Window x:Class="HueIlluminator.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:ui="clr-namespace:HueIlluminator.UI"
+        Title="MainWindow" Height="350" Width="525">
+    <Window.Resources>
+        <BooleanToVisibilityConverter x:Key="BooleanToVisibility"/>
+        <ui:BooleanToInvisibilityConverter x:Key="BooleanToInvisibility"/>
+    </Window.Resources>
+    <DockPanel LastChildFill="True">
+        <DockPanel DockPanel.Dock="Top">
+            <TextBlock Text="Brain wave relay server:"/>
+            <Button DockPanel.Dock="Right" Content="Connect"/>
+            <TextBox Text="{Binding Host}"/>
+        </DockPanel>
+        <Grid>
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*"/>
+                <ColumnDefinition Width="5"/>
+                <ColumnDefinition Width="2*"/>
+            </Grid.ColumnDefinitions>
+            <ListBox Grid.Column="0" Name="Bridges" DockPanel.Dock="Left" ItemsSource="{Binding Bridges}" SelectedItem="{Binding SelectedBridge, Mode=TwoWay}">
+                <ListBox.ItemTemplate>
+                    <DataTemplate>
+                        <TextBlock Text="{Binding IP}"/>
+                    </DataTemplate>
+                </ListBox.ItemTemplate>
+            </ListBox>
+            <GridSplitter Grid.Column="1" HorizontalAlignment="Stretch"/>
+            <StackPanel Grid.Column="2" DataContext="{Binding SelectedItem, ElementName=Bridges}">
+                <TextBlock Text="{Binding IP}"/>
+                <Grid>
+                    <StackPanel Visibility="{Binding IsInitialized, Converter={StaticResource BooleanToInvisibility}}" HorizontalAlignment="Center" VerticalAlignment="Center">
+                        <TextBlock Text="Not initialized..."/>
+                        <Button Content="Regist me!"/>
+                    </StackPanel>
+                    <ListBox  Name="Lights"  ItemsSource="{Binding Lights}" Visibility="{Binding IsInitialized, Converter={StaticResource BooleanToVisibility}}">
+                        <ListBox.ItemTemplate>
+                            <DataTemplate>
+                                <StackPanel>
+                                    <CheckBox IsChecked="{Binding State.On}" Command="{Binding ToggleOnOffCommand}"/>
+                                    <TextBlock Text="{Binding ID}"/>
+                                </StackPanel>
+                            </DataTemplate>
+                        </ListBox.ItemTemplate>
+                    </ListBox>
+                </Grid>
+            </StackPanel>
+        </Grid>
+    </DockPanel>
+</Window>
